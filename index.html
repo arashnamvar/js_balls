@@ -2,12 +2,22 @@
 <head>
 	<title>Javascript Box - OOP demo</title>
 </head>
+<style type="text/css">
+	#svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	* {
+		padding: 0;
+		margin: 0;
+	}
+
+</style>
 <body>
-
 	<svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg>
-
 	<script>
-	function Circle(cx, cy, html_id)
+	function Circle(cx, cy, html_id, r)
 	{
 		var html_id = html_id;
 		this.info = { cx: cx,  cy: cy };
@@ -28,7 +38,7 @@
 			var circle = makeSVG('circle', 
 				{ 	cx: this.info.cx,
 				  	cy: this.info.cy,
-				  	r:  10,
+				  	r:  r,
 				  	id: html_id,
 				  	style: "fill: black"
 				});
@@ -40,11 +50,11 @@
 			var el = document.getElementById(html_id);
 
 			//see if the circle is going outside the browser. if it is, reverse the velocity
-			if( this.info.cx > document.body.clientWidth || this.info.cx < 0)
+			if( this.info.cx > document.body.clientWidth-10 || this.info.cx < 10)
 			{
 				this.info.velocity.x = this.info.velocity.x * -1;
 			}
-			if( this.info.cy > document.body.clientHeight || this.info.cy < 0)
+			if( this.info.cy > document.body.clientHeight-10 || this.info.cy < 10)
 			{
 				this.info.velocity.y = this.info.velocity.y * -1;
 			}
@@ -82,8 +92,8 @@
 			}
 		}
 
-		this.createNewCircle = function(x,y){
-			var new_circle = new Circle(x,y,counter++);
+		this.createNewCircle = function(x,y,r){
+			var new_circle = new Circle(x,y,counter++,r);
 			circles.push(new_circle);
 			// console.log('created a new circle!', new_circle);
 		}
@@ -95,8 +105,34 @@
 	var playground = new PlayGround();
 	setInterval(playground.loop, 15);
 
-	document.onclick = function(e) {
-		playground.createNewCircle(e.x,e.y);
+	document.onmousedown = function()
+	{
+			begin_time = 0;
+	
+		get_start = function()
+		{
+			var date1 = new Date();
+			begin_time = date1.getTime();
+		}
+		get_start();
+	}
+
+	document.onmouseup = function()
+	{
+			get_end = function()
+		{
+			var date2 = new Date();
+			var time2 = date2.getTime();
+			// var time_difference = time2 - begin_time;
+			time_difference = (time2 - begin_time)*.25;
+		}
+		get_end();
+	}
+
+		document.onclick = function(e) {
+		playground.createNewCircle(e.x,e.y,time_difference);
+		
+
 	}
 	
 	</script>
